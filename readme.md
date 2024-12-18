@@ -1,4 +1,8 @@
- this project uses stow to pull dotconfigs
+this project uses stow to pull dotconfigs
+
+#omg this is so fucking annoying
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/arch_rsa
 
 install zsh
 install zap
