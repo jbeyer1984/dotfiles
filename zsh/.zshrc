@@ -24,7 +24,9 @@ plug "zsh-users/zsh-syntax-highlighting"
 plug "zsh-users/zsh-history-substring-search"
 
 # keybinds
-bindkey '^ ' autosuggest-accept
+#bindkey '^ ' autosuggest-accept
+
+bindkey '^X^e' edit-command-line
 
 export PATH="$HOME/.local/bin":$PATH
 
@@ -32,6 +34,11 @@ if command -v bat &> /dev/null; then
   alias cat="bat -pp --theme \"Visual Studio Dark+\"" 
   alias catt="bat --theme \"Visual Studio Dark+\"" 
 fi
+
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+bindkey  "^[[3~"  delete-char
 
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
