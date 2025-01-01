@@ -1,12 +1,66 @@
 #!/bin/sh
 
-alias szh="source ~/.config/zsh/.zshrc"
+alias szh="source ~/.zshrc"
+alias vzh="nvim ~/.zshrc"
 alias lth="ls -lt | head"
 alias lath="ls -lt | head"
 alias ltf="ls -lt | less"
 alias latf="ls -lt | less"
+alias sai="sudo nala install"
+alias sas="sudo nala search"
+alias cc="xclip -i -r -sel clip"
+alias nva="nvim /home/jens/.config/zsh/aliases.zsh"
 
-alias lt='ls -lta'
+
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+
+# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+_fzf_compgen_path() {
+  fd --hidden --exclude .git . "$1"
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+  fd --type=d --hidden --exclude .git . "$1"
+}
+
+show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
+
+export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+# Advanced customization of fzf options via _fzf_comprun function
+# - The first argument to the function is the name of the command.
+# - You should make sure to pass the rest of the arguments to fzf.
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo ${}'"         "$@" ;;
+    ssh)          fzf --preview 'dig {}'                   "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
+  esac
+}
+
+fzf_history_copy() {
+  local num_entries=150  # Adjust this number to show more or fewer entries
+  local selected=$(history | tail -n $num_entries | fzf --tac --no-sort --multi)
+  if [ -n "$selected" ]; then
+    echo "$selected" | sed 's/^ *[0-9]* *//' | xclip -selection clipboard
+    echo "Copied to clipboard."
+  fi
+}
+alias hc='fzf_history_copy'
+
+
+alias lt='eza --group-directories-first -lt modified'
+
 pd() {
 	if [ 1 = $# ]; then
 		ls -d $PWD/$1 | xclip -r -sel clip
@@ -19,9 +73,9 @@ pld() {
 }
 function lta() {
 	if [ -e $1 ]; then
-		ls -lt $1
+		ls -lat $1
 	else
-		echo $1 | cut -c2- | xargs ls -lt
+		echo $1 | cut -c2- | xargs ls -lat
 	fi
 }
 function lf() {

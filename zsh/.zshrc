@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #!/bin/sh
 [ -f "$HOME/.local/share/zap/zap.zsh" ] && source "$HOME/.local/share/zap/zap.zsh"
 
@@ -16,7 +23,8 @@ plug "zsh-users/zsh-autosuggestions"
 plug "hlissner/zsh-autopair"
 plug "zap-zsh/supercharge"
 #plug "zap-zsh/vim"
-plug "zap-zsh/zap-prompt"
+#plug "zap-zsh/zap-prompt"
+plug "romkatv/powerlevel10k"
 # plug "zap-zsh/atmachine" 
 plug "zap-zsh/fzf"
 #plug "zap-zsh/exa"
@@ -68,3 +76,8 @@ export SDKMAN_DIR="$HOME/.sdkman"
 ## bun
 #export BUN_INSTALL="$HOME/.bun"
 #export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# [[ ! -f ~/fzf-git.sh/fzf-git.sh ]] || source ~/fzf-git.sh/fzf-git.sh
